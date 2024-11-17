@@ -64,26 +64,42 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun DiceWithButtonAndImage(modifier: Modifier = Modifier) {
+fun Lemonade(modifier: Modifier = Modifier) {
 
-    var result by remember { mutableStateOf(1) }
+    var result by remember { mutableStateOf(value = 1) }
 
-    val imageResource = when (result) {
-        1 -> R.drawable.dice_1
-        2 -> R.drawable.dice_2
-        3 -> R.drawable.dice_3
-        4 -> R.drawable.dice_4
-        5 -> R.drawable.dice_5
-        else -> R.drawable.dice_6
+    val random = (2..4).random()
+    var count = 1;
+
+    val imageLemon = when (result) {
+        1 -> R.drawable.lemon_tree
+        2 -> R.drawable.lemon_squeeze
+        3 -> R.drawable.lemon_drink
+        4 -> R.drawable.lemon_restart
+        else -> R.drawable.lemon_tree
     }
 
-    Column (modifier = modifier.fillMaxWidth(),
+    val text = when (result) {
+        1 -> R.string.text_1
+        2 -> R.string.text_2
+        3 -> R.string.text_3
+        4 -> R.string.text_4
+        else -> R.string.text_1
+    }
+
+    Column (
+        modifier = modifier
+            .fillMaxWidth()
+            .statusBarsPadding()
     ) {
         Text (
-            text = "Teste",
+            text = stringResource(R.string.title),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
             modifier = modifier
                 .background(color = colorResource(R.color.background_title))
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(16.dp),
             textAlign = TextAlign.Center
         )
     }
@@ -94,18 +110,34 @@ fun DiceWithButtonAndImage(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
 
-        Image (
-            painter = painterResource(imageResource),
-            contentDescription = result.toString()
-        )
+        Box (
+            modifier = modifier
+                .clip(RoundedCornerShape(32.dp))
+                .clickable {
+                    when (result) {
+                        1 -> result++
+                        2 -> {
+                            if (count != random) count++
+                            else result++
+                        }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button ( onClick = {
-            result = (1..6).random()
-        }
+                        3 -> result++
+                        4 -> result = 1
+                    }
+                }
         ) {
-            Text (text =  stringResource(R.string.roll))
+            Image (
+                painter = painterResource(imageLemon),
+                contentDescription = imageLemon.toString(),
+                modifier = modifier
+                    .background(color = colorResource(R.color.background_image))
+                    .padding(16.dp)
+            )
         }
+
+        Text (
+            text = stringResource(text),
+            modifier = modifier.padding(top = 16.dp)
+        )
     }
 }
